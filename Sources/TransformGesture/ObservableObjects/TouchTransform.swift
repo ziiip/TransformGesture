@@ -8,6 +8,21 @@ import CGMath
 /// pass it to ``transformEffect`` modifier to accordingly transform your views.
 /// This object should be created with `@StateObject` attribute in your view hierarchy.
 public class TouchTransform: ObservableObject{
+    
+    // MARK: - Default Constants
+    nonisolated public static let defaultTranslation: CGSize = .zero
+    nonisolated public static let defaultScale: CGFloat = 1
+    nonisolated public static let defaultRotation: CGFloat = 0
+    nonisolated public static let defaultScaleRange: ClosedRange<CGFloat> = 0...CGFloat.greatestFiniteMagnitude
+    nonisolated public static let defaultRotationRange: ClosedRange<CGFloat> = -CGFloat.greatestFiniteMagnitude...CGFloat.greatestFiniteMagnitude
+    nonisolated public static let defaultTranslationRangeX: ClosedRange<CGFloat> = -CGFloat.greatestFiniteMagnitude...CGFloat.greatestFiniteMagnitude
+    nonisolated public static let defaultTranslationRangeY: ClosedRange<CGFloat> = -CGFloat.greatestFiniteMagnitude...CGFloat.greatestFiniteMagnitude
+    nonisolated public static let defaultTranslationXSnapDistance: CGFloat = 0
+    nonisolated public static let defaultTranslationYSnapDistance: CGFloat = 0
+    nonisolated public static let defaultRotationSnapPeriod: CGFloat = .greatestFiniteMagnitude
+    nonisolated public static let defaultRotationSnapDistance: CGFloat = 0
+    nonisolated public static let defaultScaleSnapDistance: CGFloat = 0
+    nonisolated public static let defaultDisableRelativeRotationAndScale: Bool = false
     /// Creates an instance of ``TouchTransform``.
     /// - Parameters:
     ///   - translation: initial translation.
@@ -23,42 +38,56 @@ public class TouchTransform: ObservableObject{
     ///   - rotationSnapDistance: max rotational deviation for snapping.
     ///   - scaleSnapDistance: max zooming deviation from 1 for snapping to 1.
     ///   - disableRelativeRotationAndScale: rotation andd scale is performed with center axis instead of using the centerpoint between two fingers
-    public init(translation: CGSize = .zero,
-                scale: CGFloat = 1,
-                rotation: CGFloat = 0,
-                scaleRange: ClosedRange<CGFloat> = 0...CGFloat.greatestFiniteMagnitude,
-                rotationRange: ClosedRange<CGFloat> = -CGFloat.greatestFiniteMagnitude...CGFloat.greatestFiniteMagnitude,
-                translationRangeX: ClosedRange<CGFloat> = -CGFloat.greatestFiniteMagnitude...CGFloat.greatestFiniteMagnitude,
-                translationRangeY: ClosedRange<CGFloat> = -CGFloat.greatestFiniteMagnitude...CGFloat.greatestFiniteMagnitude,
-                translationXSnapDistance: CGFloat = 0,
-                translationYSnapDistance: CGFloat = 0,
-                rotationSnapPeriod: CGFloat = .greatestFiniteMagnitude,
-                rotationSnapDistance: CGFloat = 0,
-                scaleSnapDistance: CGFloat = 0,
-                disableRelativeRotationAndScale: Bool = false) {
-        self.resulting.translation = translation
-        self.resulting.scale = scale
-        self.resulting.rotation = rotation
-        self.resulting.centerPoint = .zero
-        
-        self.translationRangeX = translationRangeX
-        self.translationRangeY = translationRangeY
-        self.rotationRange = rotationRange
-        self.scaleRange = scaleRange
-        
-        self.translation = resulting.translation
-        self.scale = resulting.scale
-        self.rotation = -resulting.rotation
-        
-        self.translationXSnapDistance = translationXSnapDistance
-        self.translationYSnapDistance = translationYSnapDistance
-        
-        self.rotationSnapDistance = rotationSnapDistance
-        self.rotationSnapPeriod = rotationSnapPeriod
-        
-        self.scaleSnapDistance = scaleSnapDistance
-        
-        self.disableRelativeRotationAndScale = disableRelativeRotationAndScale
+    public init(translation: CGSize = TouchTransform.defaultTranslation,
+                scale: CGFloat = TouchTransform.defaultScale,
+                rotation: CGFloat = TouchTransform.defaultRotation,
+                scaleRange: ClosedRange<CGFloat> = TouchTransform.defaultScaleRange,
+                rotationRange: ClosedRange<CGFloat> = TouchTransform.defaultRotationRange,
+                translationRangeX: ClosedRange<CGFloat> = TouchTransform.defaultTranslationRangeX,
+                translationRangeY: ClosedRange<CGFloat> = TouchTransform.defaultTranslationRangeY,
+                translationXSnapDistance: CGFloat = TouchTransform.defaultTranslationXSnapDistance,
+                translationYSnapDistance: CGFloat = TouchTransform.defaultTranslationYSnapDistance,
+                rotationSnapPeriod: CGFloat = TouchTransform.defaultRotationSnapPeriod,
+                rotationSnapDistance: CGFloat = TouchTransform.defaultRotationSnapDistance,
+                scaleSnapDistance: CGFloat = TouchTransform.defaultScaleSnapDistance,
+                disableRelativeRotationAndScale: Bool = TouchTransform.defaultDisableRelativeRotationAndScale
+    ) {
+//        self.resulting.translation = translation
+//        self.resulting.scale = scale
+//        self.resulting.rotation = rotation
+//        self.resulting.centerPoint = .zero
+//        
+//        self.translationRangeX = translationRangeX
+//        self.translationRangeY = translationRangeY
+//        self.rotationRange = rotationRange
+//        self.scaleRange = scaleRange
+//        
+//        self.translation = resulting.translation
+//        self.scale = resulting.scale
+//        self.rotation = -resulting.rotation
+//        
+//        self.translationXSnapDistance = translationXSnapDistance
+//        self.translationYSnapDistance = translationYSnapDistance
+//        
+//        self.rotationSnapDistance = rotationSnapDistance
+//        self.rotationSnapPeriod = rotationSnapPeriod
+//        
+//        self.scaleSnapDistance = scaleSnapDistance
+//        
+//        self.disableRelativeRotationAndScale = disableRelativeRotationAndScale
+        reset(translation: translation,
+              scale: scale,
+              rotation: rotation,
+              scaleRange: scaleRange,
+              rotationRange: rotationRange,
+              translationRangeX: translationRangeX,
+              translationRangeY: translationRangeY,
+              translationXSnapDistance: translationXSnapDistance,
+              translationYSnapDistance: translationYSnapDistance,
+              rotationSnapPeriod: rotationSnapPeriod,
+              rotationSnapDistance: rotationSnapDistance,
+              scaleSnapDistance: scaleSnapDistance,
+              disableRelativeRotationAndScale: disableRelativeRotationAndScale)
     }
     
     //Published Dragging Values
@@ -120,16 +149,16 @@ public class TouchTransform: ObservableObject{
     @Published public var rotationSnapped = false
     
     //Public Properties
-    public var translationRangeX: ClosedRange<CGFloat>
-    public var translationRangeY: ClosedRange<CGFloat>
-    public var scaleRange: ClosedRange<CGFloat>
-    public var rotationRange: ClosedRange<CGFloat>
+    public var translationRangeX: ClosedRange<CGFloat> = TouchTransform.defaultTranslationRangeX
+    public var translationRangeY: ClosedRange<CGFloat> = TouchTransform.defaultTranslationRangeY
+    public var scaleRange: ClosedRange<CGFloat> = TouchTransform.defaultScaleRange
+    public var rotationRange: ClosedRange<CGFloat> = TouchTransform.defaultRotationRange
     
-    public var translationXSnapDistance: CGFloat
-    public var translationYSnapDistance: CGFloat
-    public var scaleSnapDistance: CGFloat
-    public var rotationSnapDistance: CGFloat
-    public var rotationSnapPeriod: CGFloat
+    public var translationXSnapDistance: CGFloat = TouchTransform.defaultTranslationXSnapDistance
+    public var translationYSnapDistance: CGFloat = TouchTransform.defaultTranslationYSnapDistance
+    public var scaleSnapDistance: CGFloat = TouchTransform.defaultScaleSnapDistance
+    public var rotationSnapDistance: CGFloat = TouchTransform.defaultRotationSnapDistance
+    public var rotationSnapPeriod: CGFloat = TouchTransform.defaultRotationSnapPeriod
     
     //Private properties
     var current: Transform!
@@ -138,7 +167,7 @@ public class TouchTransform: ObservableObject{
     
     var centerTranslation: CGSize = .zero
     
-    let disableRelativeRotationAndScale: Bool
+    var disableRelativeRotationAndScale: Bool = TouchTransform.defaultDisableRelativeRotationAndScale
 }
 
 // Public functions
@@ -149,6 +178,51 @@ public extension TouchTransform{
         current = Transform()
         updatePublishedTransformValues()
         current = nil
+    }
+
+    func reset(
+        translation: CGSize = TouchTransform.defaultTranslation,
+        scale: CGFloat = TouchTransform.defaultScale,
+        rotation: CGFloat = TouchTransform.defaultRotation,
+        scaleRange: ClosedRange<CGFloat> = TouchTransform.defaultScaleRange,
+        rotationRange: ClosedRange<CGFloat> = TouchTransform.defaultRotationRange,
+        translationRangeX: ClosedRange<CGFloat> = TouchTransform.defaultTranslationRangeX,
+        translationRangeY: ClosedRange<CGFloat> = TouchTransform.defaultTranslationRangeY,
+        translationXSnapDistance: CGFloat = TouchTransform.defaultTranslationXSnapDistance,
+        translationYSnapDistance: CGFloat = TouchTransform.defaultTranslationYSnapDistance,
+        rotationSnapPeriod: CGFloat = TouchTransform.defaultRotationSnapPeriod,
+        rotationSnapDistance: CGFloat = TouchTransform.defaultRotationSnapDistance,
+        scaleSnapDistance: CGFloat = TouchTransform.defaultScaleSnapDistance,
+        disableRelativeRotationAndScale: Bool = TouchTransform.defaultDisableRelativeRotationAndScale
+    ) {
+        resulting = Transform()
+        current = Transform()
+
+        self.resulting.translation = translation
+        self.resulting.scale = scale
+        self.resulting.rotation = rotation
+        self.resulting.centerPoint = .zero
+
+        self.translationRangeX = translationRangeX
+        self.translationRangeY = translationRangeY
+        self.rotationRange = rotationRange
+        self.scaleRange = scaleRange
+
+        self.translation = resulting.translation
+        self.scale = resulting.scale
+        self.rotation = -resulting.rotation
+
+        self.translationXSnapDistance = translationXSnapDistance
+        self.translationYSnapDistance = translationYSnapDistance
+
+        self.rotationSnapDistance = rotationSnapDistance
+        self.rotationSnapPeriod = rotationSnapPeriod
+
+        self.scaleSnapDistance = scaleSnapDistance
+
+        self.disableRelativeRotationAndScale = disableRelativeRotationAndScale
+
+        updatePublishedTransformValues()
     }
 }
 
