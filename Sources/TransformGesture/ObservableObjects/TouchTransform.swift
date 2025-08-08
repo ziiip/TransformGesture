@@ -181,48 +181,49 @@ public extension TouchTransform{
     }
 
     func reset(
-        translation: CGSize = TouchTransform.defaultTranslation,
-        scale: CGFloat = TouchTransform.defaultScale,
-        rotation: CGFloat = TouchTransform.defaultRotation,
-        scaleRange: ClosedRange<CGFloat> = TouchTransform.defaultScaleRange,
-        rotationRange: ClosedRange<CGFloat> = TouchTransform.defaultRotationRange,
-        translationRangeX: ClosedRange<CGFloat> = TouchTransform.defaultTranslationRangeX,
-        translationRangeY: ClosedRange<CGFloat> = TouchTransform.defaultTranslationRangeY,
-        translationXSnapDistance: CGFloat = TouchTransform.defaultTranslationXSnapDistance,
-        translationYSnapDistance: CGFloat = TouchTransform.defaultTranslationYSnapDistance,
-        rotationSnapPeriod: CGFloat = TouchTransform.defaultRotationSnapPeriod,
-        rotationSnapDistance: CGFloat = TouchTransform.defaultRotationSnapDistance,
-        scaleSnapDistance: CGFloat = TouchTransform.defaultScaleSnapDistance,
-        disableRelativeRotationAndScale: Bool = TouchTransform.defaultDisableRelativeRotationAndScale
+        translation: CGSize? = nil,
+        scale: CGFloat? = nil,
+        rotation: CGFloat? = nil,
+        scaleRange: ClosedRange<CGFloat>? = nil,
+        rotationRange: ClosedRange<CGFloat>? = nil,
+        translationRangeX: ClosedRange<CGFloat>? = nil,
+        translationRangeY: ClosedRange<CGFloat>? = nil,
+        translationXSnapDistance: CGFloat? = nil,
+        translationYSnapDistance: CGFloat? = nil,
+        rotationSnapPeriod: CGFloat? = nil,
+        rotationSnapDistance: CGFloat? = nil,
+        scaleSnapDistance: CGFloat? = nil,
+        disableRelativeRotationAndScale: Bool? = nil
     ) {
         resulting = Transform()
         current = Transform()
 
-        self.resulting.translation = translation
-        self.resulting.scale = scale
-        self.resulting.rotation = rotation
+        self.resulting.translation = translation ?? self.resulting.translation
+        self.resulting.scale = scale ?? self.resulting.scale
+        self.resulting.rotation = rotation ?? self.resulting.rotation
         self.resulting.centerPoint = .zero
 
-        self.translationRangeX = translationRangeX
-        self.translationRangeY = translationRangeY
-        self.rotationRange = rotationRange
-        self.scaleRange = scaleRange
+        self.translationRangeX = translationRangeX ?? self.translationRangeX
+        self.translationRangeY = translationRangeY ?? self.translationRangeY
+        self.rotationRange = rotationRange ?? self.rotationRange
+        self.scaleRange = scaleRange ?? self.scaleRange
 
         self.translation = resulting.translation
         self.scale = resulting.scale
         self.rotation = -resulting.rotation
 
-        self.translationXSnapDistance = translationXSnapDistance
-        self.translationYSnapDistance = translationYSnapDistance
+        self.translationXSnapDistance = translationXSnapDistance ?? self.translationXSnapDistance
+        self.translationYSnapDistance = translationYSnapDistance ?? self.translationYSnapDistance
 
-        self.rotationSnapDistance = rotationSnapDistance
-        self.rotationSnapPeriod = rotationSnapPeriod
+        self.rotationSnapDistance = rotationSnapDistance ?? self.rotationSnapDistance
+        self.rotationSnapPeriod = rotationSnapPeriod ?? self.rotationSnapPeriod
 
-        self.scaleSnapDistance = scaleSnapDistance
+        self.scaleSnapDistance = scaleSnapDistance ?? self.scaleSnapDistance
 
-        self.disableRelativeRotationAndScale = disableRelativeRotationAndScale
+        self.disableRelativeRotationAndScale = disableRelativeRotationAndScale ?? self.disableRelativeRotationAndScale
 
         updatePublishedTransformValues()
+        current = nil
     }
 }
 
